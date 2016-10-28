@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mgrdata>
+  <plugin name="pmwallet1">
+    <group>payment_method</group>
+    <msg name="desc_short" lang="ru">Wallet One</msg>
+    <msg name="desc_short" lang="en">Wallet One</msg>
+    <msg name="desc_full" lang="ru">Wallet One</msg>
+    <msg name="desc_full" lang="en">Wallet One</msg>
+  </plugin>
+
+  <metadata name="paymethod.edit.wallet1" type="form">
+    <form>
+      <page name="methodprops">
+        <field name="shopid">
+          <input name="shopid" required="yes" type="text" />
+        </field>
+        <field name="secret_key">
+          <input name="secret_key" required="yes" type="text" />
+        </field>
+      </page>
+    </form>
+  </metadata>
+  
+  <lang name="en">
+    <messages name="label_paymethod">
+      <msg name="pmwallet1">Wallet One</msg>
+      <msg name="module_pmwallet1">Wallet One</msg>
+    </messages>
+
+    <messages name="paymethod.edit.wallet1">
+      <msg name="shopid">Shop ID</msg>
+      <msg name="hint_shopid">Shop ID from Wallet One</msg>
+    </messages>
+    <messages name="paymethod.edit.wallet1">
+      <msg name="secret_key">Secret Key</msg>
+      <msg name="hint_secret_key">Secret key from Wallet One</msg>
+    </messages>   
+
+  </lang>
+
+  <lang name="ru">
+     <messages name="label_paymethod">
+      <msg name="pmwallet1">Wallet One</msg>
+      <msg name="module_pmwallet1">Wallet One</msg>
+    </messages>
+
+    <messages name="paymethod.edit.wallet1">
+      <msg name="shopid">ID магазина</msg>
+      <msg name="hint_shopid">ID магазина с сайта Wallet One</msg>
+    </messages>
+    <messages name="paymethod.edit.wallet1">
+      <msg name="secret_key">Secret Key</msg>
+      <msg name="hint_secret_key">Секоетный ключ магазина с сайта Wallet One</msg>
+    </messages>   
+  </lang>
+</mgrdata>

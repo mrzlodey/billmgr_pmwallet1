@@ -1,0 +1,50 @@
+#!/usr/bin/php
+<?php
+
+set_include_path(get_include_path() . PATH_SEPARATOR . "/usr/local/mgr5/include/php");
+define('__MODULE__', "wallet1");
+
+require_once 'bill_util.php';
+
+$longopts  = array
+(
+    "command:",
+    "payment:",
+    "amount:",
+);
+
+$options = getopt("", $longopts);
+
+
+try {
+	$command = $options['command'];
+	Debug("command ". $options['command']);
+
+	if ($command == "config") {
+		$config_xml = simplexml_load_string($default_xml_string);
+		$feature_node = $config_xml->addChild("feature");
+		$feature_node->addChild("redirect", 		"on");
+		$feature_node->addChild("notneedprofile", 	"on");
+		$feature_node->addChild("pmtune", 			"off");
+		$feature_node->addChild("pmvalidate", 		"off");
+		$feature_node->addChild("crvalidate", 		"off");
+		$feature_node->addChild("crset", 			"on");
+		$feature_node->addChild("crdelete", 		"off");
+
+		$param_node = $config_xml->addChild("param");
+
+		$param_node->addChild("payment_script", "/mancgi/wallet1payment");
+
+		echo $config_xml->asXML();
+	} elseif ($command == "crset") {
+		$payment_id = $options['payment'];
+		LocalQuery("payment.setinpay", array("elid" => $payment_id, ));
+	} 
+	else {
+		throw new Error("unknown command");
+	}
+} catch (Exception $e) {
+	echo $e;
+}
+
+?>

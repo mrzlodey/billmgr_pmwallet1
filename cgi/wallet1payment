@@ -1,0 +1,79 @@
+#!/usr/bin/php
+<?php
+
+set_include_path(get_include_path() . PATH_SEPARATOR . "/usr/local/mgr5/include/php");
+define('__MODULE__', "wallet1");
+
+require_once 'bill_util.php';
+
+echo "Content-Type: text/html\n\n";
+
+$param = CgiInput();
+
+	$info = LocalQuery("payment.info", array("elid" => $param["elid"], ));
+	$secret_key = $info->payment[0]->paymethod[1]->secret_key;
+
+	echo "<html>\n";
+	echo "<head>\n";
+	echo "	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />\n";
+	echo "	<link rel='shortcut icon' href='billmgr.ico' type='image/x-icon' />\n";
+	echo "	<script language='JavaScript'>\n";
+	echo "		function DoSubmit() {\n";
+	echo "			document.w1.submit();\n";
+	echo "		}\n";
+	echo "	</script>\n";
+	echo "</head>\n";
+	echo "<body onload='DoSubmit()'>\n";
+	
+    $fields = array(); 
+    $fields["WMI_MERCHANT_ID"]    = $info->payment[0]->paymethod[1]->shop_id;
+    $fields["WMI_PAYMENT_AMOUNT"] = $info->payment[0]->paymethodamount;;
+    $fields["WMI_CURRENCY_ID"]    = "643"; // Russian Ruble
+    $fields["WMI_PAYMENT_NO"]     = $info->payment[0]->id;
+    $fields["WMI_DESCRIPTION"]    = "BASE64:".base64_encode($info->payment[0]->description);
+    $fields["WMI_SUCCESS_URL"]    = $info->payment[0]->manager_url . "?func=payment.success&elid=" . $info->payment[0]->id . "&module=" . __MODULE__;
+    $fields["WMI_FAIL_URL"]       = $info->payment[0]->manager_url . "?func=payment.failed&elid=" . $info->payment[0]->id . "&module=" . __MODULE__;
+
+    foreach($fields as $name => $val) 
+    {
+        if(is_array($val))
+        {
+            usort($val, "strcasecmp");
+            $fields[$name] = $val;
+        }
+    }
+    uksort($fields, "strcasecmp");
+    $fieldValues = "";
+    foreach($fields as $value) 
+    {
+        if(is_array($value))
+            foreach($value as $v)
+            {
+                $v = iconv("utf-8", "windows-1251", $v);
+                $fieldValues .= $v;
+            }
+        else
+        {
+            $value = iconv("utf-8", "windows-1251", $value);
+            $fieldValues .= $value;
+        }
+    }
+    $signature = base64_encode(pack("H*", md5($fieldValues . $secret_key)));
+    
+    print "<form name='w1' action='https://wl.walletone.com/checkout/checkout/Index' method='POST'>";
+    foreach($fields as $key => $val)
+    {
+        if(is_array($val))
+            foreach($val as $value)
+            {
+                print "$key: <input type='text' name='$key' value='$value'/>";
+            }
+        else     
+            print "$key: <input type='text' name='$key' value='$val'/>";
+    }
+ 
+    print "<input type='submit'/></form>";
+	echo "</body>\n";
+	echo "</html>\n";
+
+?>

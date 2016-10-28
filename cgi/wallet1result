@@ -1,0 +1,60 @@
+#!/usr/bin/php
+<?php
+
+set_include_path(get_include_path() . PATH_SEPARATOR . "/usr/local/mgr5/include/php");
+define('__MODULE__', "wallet1");
+
+require_once 'bill_util.php';
+
+echo "Content-Type: text/plain\n\n";
+
+$param = CgiInput(true);
+
+		$info = LocalQuery("payment.info", array("elid" => $param["WMI_PAYMENT_NO"], ));
+		$shopid = $info->payment[0]->paymethod[1]->shop_id;
+		$skey = $info->payment[0]->paymethod[1]->secret_key;
+
+		function print_answer($result, $description)
+		{
+		  print "WMI_RESULT=" . strtoupper($result) . "&";
+		  print "WMI_DESCRIPTION=" .urlencode($description);
+		  exit();
+		}
+		if (!isset($param["WMI_SIGNATURE"]))
+		  print_answer("Retry", "Отсутствует параметр WMI_SIGNATURE");
+		 
+		if (!isset($param["WMI_PAYMENT_NO"]))
+		  print_answer("Retry", "Отсутствует параметр WMI_PAYMENT_NO");
+		 
+		if (!isset($param["WMI_ORDER_STATE"]))
+		  print_answer("Retry", "Отсутствует параметр WMI_ORDER_STATE");
+		 
+		foreach($param as $name => $value)
+		{
+		  if ($name !== "WMI_SIGNATURE") $params[$name] = urldecode($value);
+		}
+
+		uksort($params, "strcasecmp"); $values = "";
+		foreach($params as $name => $value)
+		{
+		  $values .= $value;
+		}
+
+		$signature = base64_encode(pack("H*", md5($values . $skey)));
+
+		if ($signature == $param["WMI_SIGNATURE"])
+		{
+		  if (strtoupper($param["WMI_ORDER_STATE"]) == "ACCEPTED")
+		  {
+		    print_answer("Ok", "Заказ #" . $param["WMI_PAYMENT_NO"] . " оплачен!");
+		  }
+		  else
+		  {
+		    print_answer("Retry", "Неверное состояние ". $param["WMI_ORDER_STATE"]);
+		  }
+		}
+		else
+		{
+		  print_answer("Retry", "Неверная подпись " . $param["WMI_SIGNATURE"]);
+		}
+?>
