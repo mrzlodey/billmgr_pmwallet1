@@ -46,6 +46,7 @@ $param = CgiInput(true);
 		{
 		  if (strtoupper($param["WMI_ORDER_STATE"]) == "ACCEPTED")
 		  {
+		    LocalQuery("payment.setpaid", array("elid" => $param["WMI_PAYMENT_NO"], ));  
 		    print_answer("Ok", "Заказ #" . $param["WMI_PAYMENT_NO"] . " оплачен!");
 		  }
 		  else
