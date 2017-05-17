@@ -58,7 +58,9 @@ $param = CgiInput();
             $fieldValues .= $value;
         }
     }
+
     $signature = base64_encode(pack("H*", md5($fieldValues . $secret_key)));
+    $fields["WMI_SIGNATURE"] = $signature;
     
     print "<form name='w1' action='https://wl.walletone.com/checkout/checkout/Index' method='POST'>";
     foreach($fields as $key => $val)
