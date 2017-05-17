@@ -11,8 +11,8 @@
   <metadata name="paymethod.edit.wallet1" type="form">
     <form>
       <page name="methodprops">
-        <field name="shopid">
-          <input name="shopid" required="yes" type="text" />
+        <field name="shop_id">
+          <input name="shop_id" required="yes" type="text" />
         </field>
         <field name="secret_key">
           <input name="secret_key" required="yes" type="text" />
@@ -28,8 +28,8 @@
     </messages>
 
     <messages name="paymethod.edit.wallet1">
-      <msg name="shopid">Shop ID</msg>
-      <msg name="hint_shopid">Shop ID from Wallet One</msg>
+      <msg name="shop_id">Shop ID</msg>
+      <msg name="hint_shop_id">Shop ID from Wallet One</msg>
     </messages>
     <messages name="paymethod.edit.wallet1">
       <msg name="secret_key">Secret Key</msg>
@@ -45,8 +45,8 @@
     </messages>
 
     <messages name="paymethod.edit.wallet1">
-      <msg name="shopid">ID магазина</msg>
-      <msg name="hint_shopid">ID магазина с сайта Wallet One</msg>
+      <msg name="shop_id">ID магазина</msg>
+      <msg name="hint_shop_id">ID магазина с сайта Wallet One</msg>
     </messages>
     <messages name="paymethod.edit.wallet1">
       <msg name="secret_key">Secret Key</msg>
